@@ -435,6 +435,44 @@
     line-height:1.6; margin:14px 0 0; padding-top:12px; border-top:1px dashed var(--line);
   }
 
+
+  /* ── CAMPEÃO & ARTILHEIRO ── */
+  .champ-grid{ display:grid; grid-template-columns: repeat(2, 1fr); gap:16px; margin-top:14px; }
+  @media (max-width: 760px){ .champ-grid{ grid-template-columns: 1fr; } }
+  .champ-card{
+    background: linear-gradient(180deg,var(--panel) 0%,var(--bg-soft) 100%);
+    border:1px solid var(--line); border-radius:14px; padding:20px 22px;
+  }
+  .champ-icon{ font-size:22px; margin-bottom:8px; display:block; }
+  .champ-title{ font-family:'Archivo Black',sans-serif; font-size:16px; margin-bottom:4px; }
+  .champ-sub{ font-family:'DM Mono',monospace; font-size:11.5px; color:var(--muted); margin-bottom:16px; text-transform:uppercase; letter-spacing:0.04em; }
+  .champ-bar-row{ margin-bottom: 12px; }
+  .champ-bar-label{ display:flex; justify-content:space-between; font-size:14px; margin-bottom:5px; }
+  .champ-bar-label .cb-name{ font-weight:700; color:var(--chalk); }
+  .champ-bar-label .cb-count{ font-family:'DM Mono',monospace; color:var(--gold); font-weight:600; }
+  .champ-bar-track{ height:8px; border-radius:4px; background:rgba(255,255,255,0.06); overflow:hidden; }
+  .champ-bar-fill{ height:100%; border-radius:4px; background:linear-gradient(90deg,var(--grass),var(--grass-bright)); }
+
+  .champ-table-wrap{ margin-top:18px; }
+  .champ-table{ width:100%; border-collapse:collapse; }
+  .champ-table th{
+    text-align:left; font-family:'DM Mono',monospace; font-size:11px; font-weight:500;
+    text-transform:uppercase; letter-spacing:0.05em; color:var(--muted);
+    padding:8px 10px; border-bottom:1px solid var(--line);
+  }
+  .champ-table td{ padding:10px 10px; font-size:14px; border-bottom:1px solid rgba(255,255,255,0.04); }
+  .champ-table tr:last-child td{ border-bottom:none; }
+  .champ-table .ct-name{ font-weight:700; color:var(--chalk); }
+  .champ-table .ct-team{ color:var(--grass-bright); }
+  .champ-table .ct-player{ color:var(--gold); }
+
+  .champ-note{
+    font-family:'DM Mono',monospace; font-size:12px; color:var(--muted);
+    line-height:1.6; margin: 18px 0 4px; padding:12px 16px;
+    background: rgba(227,179,65,0.06); border:1px solid rgba(227,179,65,0.2); border-radius:10px;
+  }
+  .champ-note strong{ color:var(--gold); }
+
 </style>
 </head>
 <body>
@@ -453,6 +491,7 @@
     <button data-tab="rules">Como funciona</button>
     <button data-tab="race">Corrida 🏁</button>
     <button data-tab="nerd">Mundo Nerd 🤓</button>
+    <button data-tab="champions">Campeão &amp; Artilheiro 🏆</button>
   </nav>
 
   <section id="tab-rank">
@@ -530,6 +569,15 @@
       <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--muted);">curiosidades do bolão</span>
     </div>
     <div id="nerdContainer"></div>
+  </section>
+
+
+  <section id="tab-champions" style="display:none;">
+    <div class="round-head" style="margin-top:8px;margin-bottom:4px;">
+      <h2 style="font-family:'Archivo Black',sans-serif;font-size:21px;margin:0;">Campeão &amp; Artilheiro</h2>
+      <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--muted);">palpites para o título da Copa</span>
+    </div>
+    <div id="championsContainer"></div>
   </section>
 
 <footer>Bolão Copa 2026 · gerado a partir da planilha oficial do grupo · atualize o arquivo de dados para refletir novos resultados</footer>
@@ -710,10 +758,11 @@ document.querySelectorAll('nav.tabs button').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('nav.tabs button').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    ['rank','games','rules','race','nerd'].forEach(t => {
+    ['rank','games','rules','race','nerd','champions'].forEach(t => {
       document.getElementById('tab-' + t).style.display = (t === btn.dataset.tab) ? 'block' : 'none';
     if(btn.dataset.tab === 'race') { setTimeout(initRace, 50); }
     if(btn.dataset.tab === 'nerd') { setTimeout(renderNerd, 50); }
+    if(btn.dataset.tab === 'champions') { setTimeout(renderChampions, 50); }
     });
   });
 });
@@ -1010,7 +1059,7 @@ function initRace() {
 
 
 
-const NERD_DATA = {"empates": {"top": [{"key": "EBOLI", "name": "Eboli", "val": 28}, {"key": "CORIOLANO", "name": "Coriolano", "val": 22}, {"key": "HENRIQUE MORO", "name": "Henrique Moro", "val": 21}, {"key": "MARCO MAGNAGO", "name": "Marco Magnago", "val": 18}], "bottom": [{"key": "LEMBO", "name": "Lembo", "val": 3}, {"key": "GUSTAVO", "name": "Gustavo", "val": 5}, {"key": "JULIANA GILVAZ", "name": "Juliana Gilvaz", "val": 7}, {"key": "JUNIOR GUIMARÃES", "name": "Junior Guimarães", "val": 9}], "media": 14}, "animado": {"top": [{"key": "GUSTAVO", "name": "Gustavo", "val": 257}, {"key": "HENRIQUE MORO", "name": "Henrique Moro", "val": 228}, {"key": "GAIA", "name": "Gaia", "val": 212}, {"key": "CLAUDIA PESSOA", "name": "Claudia Pessoa", "val": 212}], "bottom": [{"key": "LUCAS REUTER", "name": "Lucas Reuter", "val": 142}, {"key": "GUSTAVO VIANA", "name": "Gustavo Viana", "val": 145}, {"key": "EBOLI", "name": "Eboli", "val": 154}, {"key": "RENATO MARQUES", "name": "Renato Marques", "val": 162}], "media": 185}, "zero_corr": {"top": [{"name": "Marco Magnago", "zeros": 16, "total": 162}, {"name": "Lucas Reuter", "zeros": 16, "total": 166}, {"name": "Gustavo", "zeros": 18, "total": 131}, {"name": "Marlon", "zeros": 18, "total": 146}], "bottom": [{"name": "Henrique Moro", "zeros": 25, "total": 95}, {"name": "Renato Marques", "zeros": 23, "total": 110}, {"name": "Gaia", "zeros": 23, "total": 113}, {"name": "Eboli", "zeros": 21, "total": 133}], "media_zeros": 20, "media_total": 134, "corr": -0.89}, "previsao": {"top3": [{"name": "Lucas Reuter", "atual": 166, "esperado": 194, "previsao": 360, "pos": 1}, {"name": "Tales", "atual": 146, "esperado": 207, "previsao": 353, "pos": 2}, {"name": "Lembo", "atual": 140, "esperado": 209, "previsao": 349, "pos": 3}, {"name": "Gustavo Viana", "atual": 139, "esperado": 209, "previsao": 348, "pos": 4}], "jogos_restantes": 31}, "cisne_negro": {"name": "Eboli", "label": "Catar 1x1 Suíça", "data": "2026-06-13", "soma_demais": 0}, "zebra": {"idx": 7, "data": "2026-06-13", "label": "Austrália 2x0 Turquia", "real_winner_team": "Austrália", "pct_on_real_winner": 0, "n_winners": 0, "total_decisive": 13, "winners": []}, "banquete": {"items": ["Alemanha 7x1 Curaçao", "França 3x1 Senegal", "Argentina 3x0 Argélia", "Uzbequistão 1x3 Colômbia", "Brasil 3x0 Haiti", "Alemanha 2x1 Costa do Marfim", "Espanha 4x0 Arábia Saudita"], "val": 16, "total": 16}, "mingua": {"items": ["Austrália 2x0 Turquia", "Espanha 0x0 Cabo Verde", "Arábia Saudita 1x1 Uruguai", "Portugal 1x1 RD Congo", "Bélgica 0x0 Irã", "Uruguai 2x2 Cabo Verde"], "val": 0, "total": 16}, "gourmet": {"items": ["França 3x1 Senegal"], "val": 116}, "fome": {"items": ["Austrália 2x0 Turquia", "Espanha 0x0 Cabo Verde", "Arábia Saudita 1x1 Uruguai", "Portugal 1x1 RD Congo", "Bélgica 0x0 Irã", "Uruguai 2x2 Cabo Verde"], "val": 0}, "goleada_real": {"items": ["Alemanha 7x1 Curaçao"], "val": 8}, "goleada_palpite": {"name": "Henrique Moro", "pick": "6x0", "label": "Alemanha x Curaçao", "real": "7x1"}};
+const NERD_DATA = {"empates": {"top": [{"key": "EBOLI", "name": "Eboli", "val": 28}, {"key": "CORIOLANO", "name": "Coriolano", "val": 22}, {"key": "HENRIQUE MORO", "name": "Henrique Moro", "val": 21}, {"key": "MARCO MAGNAGO", "name": "Marco Magnago", "val": 18}], "bottom": [{"key": "LEMBO", "name": "Lembo", "val": 3}, {"key": "GUSTAVO", "name": "Gustavo", "val": 5}, {"key": "JULIANA GILVAZ", "name": "Juliana Gilvaz", "val": 7}, {"key": "JUNIOR GUIMARÃES", "name": "Junior Guimarães", "val": 9}], "media": 14}, "animado": {"top": [{"key": "GUSTAVO", "name": "Gustavo", "val": 257}, {"key": "HENRIQUE MORO", "name": "Henrique Moro", "val": 228}, {"key": "GAIA", "name": "Gaia", "val": 212}, {"key": "CLAUDIA PESSOA", "name": "Claudia Pessoa", "val": 212}], "bottom": [{"key": "LUCAS REUTER", "name": "Lucas Reuter", "val": 142}, {"key": "GUSTAVO VIANA", "name": "Gustavo Viana", "val": 145}, {"key": "EBOLI", "name": "Eboli", "val": 154}, {"key": "RENATO MARQUES", "name": "Renato Marques", "val": 162}], "media": 185}, "zero_corr": {"top": [{"name": "Marco Magnago", "zeros": 16, "total": 162}, {"name": "Lucas Reuter", "zeros": 16, "total": 166}, {"name": "Gustavo", "zeros": 18, "total": 131}, {"name": "Marlon", "zeros": 18, "total": 146}], "bottom": [{"name": "Henrique Moro", "zeros": 25, "total": 95}, {"name": "Renato Marques", "zeros": 23, "total": 110}, {"name": "Gaia", "zeros": 23, "total": 113}, {"name": "Eboli", "zeros": 21, "total": 133}], "media_zeros": 20, "media_total": 134, "corr": -0.89}, "previsao": {"top3": [{"name": "Lucas Reuter", "atual": 166, "esperado": 194, "previsao": 360, "pos": 1}, {"name": "Tales", "atual": 146, "esperado": 207, "previsao": 353, "pos": 2}, {"name": "Lembo", "atual": 140, "esperado": 209, "previsao": 349, "pos": 3}, {"name": "Gustavo Viana", "atual": 139, "esperado": 209, "previsao": 348, "pos": 4}, {"name": "Juliana Gilvaz", "atual": 137, "esperado": 208, "previsao": 345, "pos": 5}, {"name": "Bernardo", "atual": 139, "esperado": 200, "previsao": 339, "pos": 6}, {"name": "Marlon", "atual": 146, "esperado": 188, "previsao": 334, "pos": 7}, {"name": "Marco Magnago", "atual": 162, "esperado": 171, "previsao": 333, "pos": 8}], "jogos_restantes": 31}, "cisne_negro": {"name": "Eboli", "label": "Catar 1x1 Suíça", "data": "2026-06-13", "soma_demais": 0}, "zebra": {"idx": 7, "data": "2026-06-13", "label": "Austrália 2x0 Turquia", "real_winner_team": "Austrália", "pct_on_real_winner": 0, "n_winners": 0, "total_decisive": 13, "winners": []}, "banquete": {"items": ["Alemanha 7x1 Curaçao", "França 3x1 Senegal", "Argentina 3x0 Argélia", "Uzbequistão 1x3 Colômbia", "Brasil 3x0 Haiti", "Alemanha 2x1 Costa do Marfim", "Espanha 4x0 Arábia Saudita"], "val": 16, "total": 16}, "mingua": {"items": ["Austrália 2x0 Turquia", "Espanha 0x0 Cabo Verde", "Arábia Saudita 1x1 Uruguai", "Portugal 1x1 RD Congo", "Bélgica 0x0 Irã", "Uruguai 2x2 Cabo Verde"], "val": 0, "total": 16}, "gourmet": {"items": ["França 3x1 Senegal"], "val": 116}, "fome": {"items": ["Austrália 2x0 Turquia", "Espanha 0x0 Cabo Verde", "Arábia Saudita 1x1 Uruguai", "Portugal 1x1 RD Congo", "Bélgica 0x0 Irã", "Uruguai 2x2 Cabo Verde"], "val": 0}, "goleada_real": {"items": ["Alemanha 7x1 Curaçao"], "val": 8}, "goleada_palpite": {"name": "Henrique Moro", "pick": "6x0", "label": "Alemanha x Curaçao", "real": "7x1"}};
 
 function renderTopBottomCard(icon, title, sub, data, unit) {
   const topRows = data.top.map(p => `
@@ -1180,6 +1229,72 @@ function renderNerd() {
   `;
 
   html += '</div>';
+  container.innerHTML = html;
+}
+
+
+
+const CHAMPIONS_DATA = {"campeao_summary": [{"team": "França", "count": 8}, {"team": "Espanha", "count": 2}, {"team": "Brasil", "count": 2}, {"team": "Inglaterra", "count": 2}, {"team": "Alemanha", "count": 1}, {"team": "Holanda", "count": 1}], "artilheiro_summary": [{"player": "Mbappé", "count": 8}, {"player": "Harry Kane", "count": 5}, {"player": "Neymar", "count": 1}, {"player": "Cristiano Ronaldo", "count": 1}, {"player": "Mikel Oyarzabal", "count": 1}], "individual": [{"name": "Gaia", "campeao": "Alemanha", "artilheiro": "Harry Kane"}, {"name": "Bernardo", "campeao": "Espanha", "artilheiro": "Harry Kane"}, {"name": "Gustavo", "campeao": "França", "artilheiro": "Mbappé"}, {"name": "Claudia Pessoa", "campeao": "França", "artilheiro": "Mbappé"}, {"name": "Juliana Gilvaz", "campeao": "França", "artilheiro": "Mbappé"}, {"name": "Henrique Moro", "campeao": "Brasil", "artilheiro": "Neymar"}, {"name": "Marco Magnago", "campeao": "França", "artilheiro": "Mbappé"}, {"name": "Renato Marques", "campeao": "Holanda", "artilheiro": "Mbappé"}, {"name": "Lucas Reuter", "campeao": "França", "artilheiro": "Cristiano Ronaldo"}, {"name": "Coriolano", "campeao": "França", "artilheiro": "Mbappé"}, {"name": "Lembo", "campeao": "Espanha", "artilheiro": "Mikel Oyarzabal"}, {"name": "Marlon", "campeao": "França", "artilheiro": "Mbappé"}, {"name": "Junior Guimarães", "campeao": "Inglaterra", "artilheiro": "Harry Kane"}, {"name": "Gustavo Viana", "campeao": "França", "artilheiro": "Mbappé"}, {"name": "Eboli", "campeao": "Brasil", "artilheiro": "Harry Kane"}, {"name": "Tales", "campeao": "Inglaterra", "artilheiro": "Harry Kane"}]};
+
+function renderChampionsSummaryCard(icon, title, sub, items, key) {
+  const maxCount = items[0] ? items[0].count : 1;
+  const rows = items.map(it => {
+    const label = it[key];
+    const pct = Math.max(6, Math.round((it.count / maxCount) * 100));
+    return `
+      <div class="champ-bar-row">
+        <div class="champ-bar-label">
+          <span class="cb-name">${label}</span>
+          <span class="cb-count">${it.count} ${it.count === 1 ? 'voto' : 'votos'}</span>
+        </div>
+        <div class="champ-bar-track"><div class="champ-bar-fill" style="width:${pct}%"></div></div>
+      </div>
+    `;
+  }).join('');
+  return `
+    <div class="champ-card">
+      <span class="champ-icon">${icon}</span>
+      <div class="champ-title">${title}</div>
+      <div class="champ-sub">${sub}</div>
+      ${rows}
+    </div>
+  `;
+}
+
+function renderChampions() {
+  const container = document.getElementById('championsContainer');
+  if (!container) return;
+
+  let html = '<div class="champ-grid">';
+  html += renderChampionsSummaryCard('🏆', 'Aposta no Campeão', 'Em quem o grupo está apostando para vencer a Copa', CHAMPIONS_DATA.campeao_summary, 'team');
+  html += renderChampionsSummaryCard('⚽', 'Aposta no Artilheiro', 'Quem o grupo acha que vai ser o artilheiro da Copa', CHAMPIONS_DATA.artilheiro_summary, 'player');
+  html += '</div>';
+
+  html += `
+    <div class="champ-note">
+      <strong>Vale 100 pontos extras:</strong> acertar o campeão da Copa vale 50 pontos, e acertar o artilheiro vale outros 50. Esses pontos ainda não estão somados na classificação geral — só serão creditados quando a Copa terminar e soubermos os vencedores reais.
+    </div>
+  `;
+
+  const rows = CHAMPIONS_DATA.individual.map(p => `
+    <tr>
+      <td class="ct-name">${p.name}</td>
+      <td class="ct-team">${p.campeao}</td>
+      <td class="ct-player">${p.artilheiro}</td>
+    </tr>
+  `).join('');
+
+  html += `
+    <div class="champ-table-wrap">
+      <table class="champ-table">
+        <thead>
+          <tr><th>Participante</th><th>Campeão palpitado</th><th>Artilheiro palpitado</th></tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
+
   container.innerHTML = html;
 }
 
