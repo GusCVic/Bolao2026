@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bolão Copa 2026 — Classificação</title>
+<title>Bolão Copa 2026</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
 
@@ -561,6 +561,15 @@
     .ar-team{ display:none; }
   }
 
+
+  .bolao-selector{display:flex;gap:0;margin-bottom:0;background:var(--panel);border-radius:12px;border:1px solid var(--line);overflow:hidden;width:100%;box-sizing:border-box;}
+  .bolao-selector button{flex:1;padding:14px 10px;border:none;cursor:pointer;font-family:'Archivo Black',sans-serif;font-size:13px;background:transparent;color:var(--muted);letter-spacing:.02em;transition:all .2s;border-right:1px solid var(--line);line-height:1.3;}
+  .bolao-selector button:last-child{border-right:none;}
+  .bolao-selector button.active{background:var(--gold);color:#111;}
+  .bolao-selector button:not(.active):hover{color:var(--chalk);}
+  .b2-section{display:none;}
+  .b2-section.active-bolao{display:block;}
+  #raceCanvas2{display:block;width:100%;cursor:crosshair;}
 </style>
 </head>
 <body>
@@ -573,7 +582,14 @@
     <div class="stat-row" id="statRow"></div>
   </header>
 
-  <nav class="tabs">
+  <div style="margin-bottom:12px;">
+  <div class="bolao-selector">
+    <button id="btn-b1" class="active" onclick="switchBolao(1)">⚽ Bolão Copa 2026<br><span style="font-size:10px;font-weight:400;opacity:.8;">fase de grupos · 72 jogos</span></button>
+    <button id="btn-b2" onclick="switchBolao(2)">🏆 Bolão Copa 2026 · Mata-Mata<br><span style="font-size:10px;font-weight:400;opacity:.8;">quartas em diante · 15 participantes</span></button>
+  </div>
+</div>
+<div id="bolao1-ui" class="b2-section active-bolao">
+<nav class="tabs">
     <button class="active" data-tab="rank">Classificação</button>
     <button data-tab="games">Jogos &amp; Palpites</button>
     <button data-tab="rules">Como funciona</button>
@@ -676,12 +692,15 @@
     </div>
     <div id="retaContainer"></div>
   </section>
+</div>
 
-<footer>Bolão Copa 2026 · gerado a partir da planilha oficial do grupo · atualize o arquivo de dados para refletir novos resultados</footer>
+<footer>Bolão Copa 2026 · fase de grupos + mata-mata · gerado a partir das planilhas oficiais do grupo</footer>
 </div>
 
 <script>
 const BOLAO_DATA = {"matches": [{"row": 1, "rd": 1, "grupo": "GrupoA", "data": "2026-06-11", "hora": "16:00", "estadio": "Estádio Azteca", "sel1": "México", "sel2": "África do Sul", "placar1": 2, "placar2": 0, "label": null}, {"row": 2, "rd": 1, "grupo": "GrupoA", "data": "2026-06-11", "hora": "23:00", "estadio": "Estádio Akron", "sel1": "Coreia do Sul", "sel2": "República Tcheca", "placar1": 2, "placar2": 1, "label": null}, {"row": 3, "rd": 1, "grupo": "GrupoB", "data": "2026-06-12", "hora": "16:00", "estadio": "Toronto Field", "sel1": "Canadá", "sel2": "Bósnia e Herzegovina", "placar1": 1, "placar2": 1, "label": "CAMPEÃO"}, {"row": 4, "rd": 1, "grupo": "GrupoB", "data": "2026-06-13", "hora": "16:00", "estadio": "Santa Clara", "sel1": "Catar", "sel2": "Suíça", "placar1": 1, "placar2": 1, "label": null}, {"row": 5, "rd": 1, "grupo": "GrupoC", "data": "2026-06-13", "hora": "19:00", "estadio": "MetLife Stadium", "sel1": "Brasil", "sel2": "Marrocos", "placar1": 1, "placar2": 1, "label": null}, {"row": 6, "rd": 1, "grupo": "GrupoC", "data": "2026-06-13", "hora": "22:00", "estadio": "Gillette Stadium", "sel1": "Haiti", "sel2": "Escócia", "placar1": 0, "placar2": 1, "label": "ARTILHEIRO"}, {"row": 7, "rd": 1, "grupo": "GrupoD", "data": "2026-06-12", "hora": "22:00", "estadio": "Los Angeles", "sel1": "Estados Unidos", "sel2": "Paraguai", "placar1": 4, "placar2": 1, "label": null}, {"row": 8, "rd": 1, "grupo": "GrupoD", "data": "2026-06-13", "hora": "01:00", "estadio": "BC Place", "sel1": "Austrália", "sel2": "Turquia", "placar1": 2, "placar2": 0, "label": null}, {"row": 9, "rd": 1, "grupo": "GrupoE", "data": "2026-06-14", "hora": "14:00", "estadio": "NRG Stadium", "sel1": "Alemanha", "sel2": "Curaçao", "placar1": 7, "placar2": 1, "label": null}, {"row": 10, "rd": 1, "grupo": "GrupoE", "data": "2026-06-14", "hora": "22:00", "estadio": "Lincoln Financial Field", "sel1": "Costa do Marfim", "sel2": "Equador", "placar1": 1, "placar2": 0, "label": null}, {"row": 11, "rd": 1, "grupo": "GrupoF", "data": "2026-06-14", "hora": "17:00", "estadio": "AT&T Stadium", "sel1": "Holanda", "sel2": "Japão", "placar1": 2, "placar2": 2, "label": null}, {"row": 12, "rd": 1, "grupo": "GrupoF", "data": "2026-06-14", "hora": "23:00", "estadio": "Estádio BBVA", "sel1": "Suécia", "sel2": "Tunísia", "placar1": 5, "placar2": 1, "label": null}, {"row": 13, "rd": 1, "grupo": "GrupoG", "data": "2026-06-15", "hora": "16:00", "estadio": "Lumen Field", "sel1": "Bélgica", "sel2": "Egito", "placar1": 1, "placar2": 1, "label": null}, {"row": 14, "rd": 1, "grupo": "GrupoG", "data": "2026-06-15", "hora": "22:00", "estadio": "SoFi Stadium", "sel1": "Irã", "sel2": "Nova Zelândia", "placar1": 2, "placar2": 2, "label": null}, {"row": 15, "rd": 1, "grupo": "GrupoH", "data": "2026-06-15", "hora": "13:00", "estadio": "Mercedes-Benz", "sel1": "Espanha", "sel2": "Cabo Verde", "placar1": 0, "placar2": 0, "label": null}, {"row": 16, "rd": 1, "grupo": "GrupoH", "data": "2026-06-15", "hora": "19:00", "estadio": "Hard Rock Stadium", "sel1": "Arábia Saudita", "sel2": "Uruguai", "placar1": 1, "placar2": 1, "label": null}, {"row": 17, "rd": 1, "grupo": "GrupoI", "data": "2026-06-16", "hora": "16:00", "estadio": "MetLife Stadium", "sel1": "França", "sel2": "Senegal", "placar1": 3, "placar2": 1, "label": null}, {"row": 18, "rd": 1, "grupo": "GrupoI", "data": "2026-06-16", "hora": "19:00", "estadio": "Gillette Stadium", "sel1": "Iraque", "sel2": "Noruega", "placar1": 1, "placar2": 4, "label": null}, {"row": 19, "rd": 1, "grupo": "GrupoJ", "data": "2026-06-16", "hora": "22:00", "estadio": "Arrowhead", "sel1": "Argentina", "sel2": "Argélia", "placar1": 3, "placar2": 0, "label": null}, {"row": 20, "rd": 1, "grupo": "GrupoJ", "data": "2026-06-17", "hora": "01:00", "estadio": "Levi's Stadium", "sel1": "Áustria", "sel2": "Jordânia", "placar1": 3, "placar2": 1, "label": null}, {"row": 21, "rd": 1, "grupo": "GrupoK", "data": "2026-06-17", "hora": "14:00", "estadio": "NRG Stadium", "sel1": "Portugal", "sel2": "RD Congo", "placar1": 1, "placar2": 1, "label": null}, {"row": 22, "rd": 1, "grupo": "GrupoK", "data": "2026-06-17", "hora": "23:00", "estadio": "Estádio Azteca", "sel1": "Uzbequistão", "sel2": "Colômbia", "placar1": 1, "placar2": 3, "label": null}, {"row": 23, "rd": 1, "grupo": "GrupoL", "data": "2026-06-17", "hora": "17:00", "estadio": "AT&T Stadium", "sel1": "Inglaterra", "sel2": "Croácia", "placar1": 4, "placar2": 2, "label": null}, {"row": 24, "rd": 1, "grupo": "GrupoL", "data": "2026-06-17", "hora": "20:00", "estadio": "BMO Field", "sel1": "Gana", "sel2": "Panamá", "placar1": 1, "placar2": 0, "label": null}, {"row": 25, "rd": 2, "grupo": "GrupoA", "data": "2026-06-18", "hora": "13:00", "estadio": "Mercedes-Benz", "sel1": "República Tcheca", "sel2": "África do Sul", "placar1": 1, "placar2": 1, "label": null}, {"row": 26, "rd": 2, "grupo": "GrupoA", "data": "2026-06-18", "hora": "22:00", "estadio": "Estádio Akron", "sel1": "México", "sel2": "Coreia do Sul", "placar1": 1, "placar2": 0, "label": null}, {"row": 27, "rd": 2, "grupo": "GrupoB", "data": "2026-06-18", "hora": "16:00", "estadio": "Los Angeles", "sel1": "Suíça", "sel2": "Bósnia e Herzegovina", "placar1": 4, "placar2": 1, "label": null}, {"row": 28, "rd": 2, "grupo": "GrupoB", "data": "2026-06-18", "hora": "19:00", "estadio": "Vancouver Place", "sel1": "Canadá", "sel2": "Catar", "placar1": 6, "placar2": 0, "label": null}, {"row": 29, "rd": 2, "grupo": "GrupoC", "data": "2026-06-19", "hora": "19:00", "estadio": "Gillette Stadium", "sel1": "Escócia", "sel2": "Marrocos", "placar1": 0, "placar2": 1, "label": null}, {"row": 30, "rd": 2, "grupo": "GrupoC", "data": "2026-06-19", "hora": "22:00", "estadio": "Lincoln Financial", "sel1": "Brasil", "sel2": "Haiti", "placar1": 3, "placar2": 0, "label": null}, {"row": 31, "rd": 2, "grupo": "GrupoD", "data": "2026-06-19", "hora": "01:00", "estadio": "Levi's Stadium", "sel1": "Turquia", "sel2": "Paraguai", "placar1": 0, "placar2": 1, "label": null}, {"row": 32, "rd": 2, "grupo": "GrupoD", "data": "2026-06-19", "hora": "16:00", "estadio": "Lumen Field", "sel1": "Estados Unidos", "sel2": "Austrália", "placar1": 2, "placar2": 0, "label": null}, {"row": 33, "rd": 2, "grupo": "GrupoE", "data": "2026-06-20", "hora": "17:00", "estadio": "BMO Field", "sel1": "Alemanha", "sel2": "Costa do Marfim", "placar1": 2, "placar2": 1, "label": null}, {"row": 34, "rd": 2, "grupo": "GrupoE", "data": "2026-06-20", "hora": "21:00", "estadio": "Arrowhead", "sel1": "Equador", "sel2": "Curaçao", "placar1": 0, "placar2": 0, "label": null}, {"row": 35, "rd": 2, "grupo": "GrupoF", "data": "2026-06-20", "hora": "14:00", "estadio": "NRG Stadium", "sel1": "Holanda", "sel2": "Suécia", "placar1": 5, "placar2": 1, "label": null}, {"row": 36, "rd": 2, "grupo": "GrupoF", "data": "2026-06-21", "hora": "01:00", "estadio": "NRG Stadium", "sel1": "Tunísia", "sel2": "Japão", "placar1": 0, "placar2": 4, "label": null}, {"row": 37, "rd": 2, "grupo": "GrupoG", "data": "2026-06-21", "hora": "16:00", "estadio": "SoFi Stadium", "sel1": "Bélgica", "sel2": "Irã", "placar1": 0, "placar2": 0, "label": null}, {"row": 38, "rd": 2, "grupo": "GrupoG", "data": "2026-06-21", "hora": "22:00", "estadio": "BC Place", "sel1": "Nova Zelândia", "sel2": "Egito", "placar1": 1, "placar2": 3, "label": null}, {"row": 39, "rd": 2, "grupo": "GrupoH", "data": "2026-06-21", "hora": "13:00", "estadio": "Mercedes-Benz", "sel1": "Espanha", "sel2": "Arábia Saudita", "placar1": 4, "placar2": 0, "label": null}, {"row": 40, "rd": 2, "grupo": "GrupoH", "data": "2026-06-21", "hora": "19:00", "estadio": "Hard Rock Stadium", "sel1": "Uruguai", "sel2": "Cabo Verde", "placar1": 2, "placar2": 2, "label": null}, {"row": 41, "rd": 2, "grupo": "GrupoI", "data": "2026-06-22", "hora": "18:00", "estadio": "Lincoln Financial", "sel1": "França", "sel2": "Iraque", "placar1": 3, "placar2": 0, "label": null}, {"row": 42, "rd": 2, "grupo": "GrupoI", "data": "2026-06-22", "hora": "21:00", "estadio": "MetLife Stadium", "sel1": "Noruega", "sel2": "Senegal", "placar1": 3, "placar2": 2, "label": null}, {"row": 43, "rd": 2, "grupo": "GrupoJ", "data": "2026-06-22", "hora": "14:00", "estadio": "AT&T Stadium", "sel1": "Argentina", "sel2": "Áustria", "placar1": 2, "placar2": 0, "label": null}, {"row": 44, "rd": 2, "grupo": "GrupoJ", "data": "2026-06-23", "hora": "00:00", "estadio": "Levi's Stadium", "sel1": "Jordânia", "sel2": "Argélia", "placar1": 1, "placar2": 2, "label": null}, {"row": 45, "rd": 2, "grupo": "GrupoK", "data": "2026-06-23", "hora": "14:00", "estadio": "NRG Stadium", "sel1": "Portugal", "sel2": "Uzbequistão", "placar1": 5, "placar2": 0, "label": null}, {"row": 46, "rd": 2, "grupo": "GrupoK", "data": "2026-06-23", "hora": "23:00", "estadio": "Estádio Akron", "sel1": "Colômbia", "sel2": "RD Congo", "placar1": 1, "placar2": 0, "label": null}, {"row": 47, "rd": 2, "grupo": "GrupoL", "data": "2026-06-23", "hora": "17:00", "estadio": "Gillette Stadium", "sel1": "Inglaterra", "sel2": "Gana", "placar1": 0, "placar2": 0, "label": null}, {"row": 48, "rd": 2, "grupo": "GrupoL", "data": "2026-06-23", "hora": "20:00", "estadio": "BMO Field", "sel1": "Panamá", "sel2": "Croácia", "placar1": 0, "placar2": 1, "label": null}, {"row": 49, "rd": 3, "grupo": "GrupoA", "data": "2026-06-24", "hora": "22:00", "estadio": "Estádio Azteca", "sel1": "República Tcheca", "sel2": "México", "placar1": 0, "placar2": 3, "label": null}, {"row": 50, "rd": 3, "grupo": "GrupoA", "data": "2026-06-24", "hora": "22:00", "estadio": "Estádio Akron", "sel1": "África do Sul", "sel2": "Coreia do Sul", "placar1": 1, "placar2": 0, "label": null}, {"row": 51, "rd": 3, "grupo": "GrupoB", "data": "2026-06-24", "hora": "16:00", "estadio": "Vancouver Place", "sel1": "Suíça", "sel2": "Canadá", "placar1": 2, "placar2": 1, "label": null}, {"row": 52, "rd": 3, "grupo": "GrupoB", "data": "2026-06-24", "hora": "16:00", "estadio": "Seatle Field", "sel1": "Bósnia e Herzegovina", "sel2": "Catar", "placar1": 3, "placar2": 1, "label": null}, {"row": 53, "rd": 3, "grupo": "GrupoC", "data": "2026-06-24", "hora": "19:00", "estadio": "Hard Rock Stadium", "sel1": "Escócia", "sel2": "Brasil", "placar1": 0, "placar2": 3, "label": null}, {"row": 54, "rd": 3, "grupo": "GrupoC", "data": "2026-06-24", "hora": "19:00", "estadio": "Mercedes-Benz", "sel1": "Marrocos", "sel2": "Haiti", "placar1": 4, "placar2": 2, "label": null}, {"row": 55, "rd": 3, "grupo": "GrupoD", "data": "2026-06-25", "hora": "23:00", "estadio": "SoFi Stadium", "sel1": "Turquia", "sel2": "Estados Unidos", "placar1": 3, "placar2": 2, "label": null}, {"row": 56, "rd": 3, "grupo": "GrupoD", "data": "2026-06-25", "hora": "23:00", "estadio": "Levi's Stadium", "sel1": "Paraguai", "sel2": "Austrália", "placar1": 0, "placar2": 0, "label": null}, {"row": 57, "rd": 3, "grupo": "GrupoE", "data": "2026-06-25", "hora": "17:00", "estadio": "Lincoln Financial", "sel1": "Equador", "sel2": "Alemanha", "placar1": 2, "placar2": 1, "label": null}, {"row": 58, "rd": 3, "grupo": "GrupoE", "data": "2026-06-25", "hora": "17:00", "estadio": "MetLife Stadium", "sel1": "Curaçao", "sel2": "Costa do Marfim", "placar1": 0, "placar2": 2, "label": null}, {"row": 59, "rd": 3, "grupo": "GrupoF", "data": "2026-06-25", "hora": "20:00", "estadio": "Arrowhead", "sel1": "Tunísia", "sel2": "Holanda", "placar1": 1, "placar2": 3, "label": null}, {"row": 60, "rd": 3, "grupo": "GrupoF", "data": "2026-06-25", "hora": "20:00", "estadio": "AT&T Stadium", "sel1": "Japão", "sel2": "Suécia", "placar1": 1, "placar2": 1, "label": null}, {"row": 61, "rd": 3, "grupo": "GrupoG", "data": "2026-06-27", "hora": "00:00", "estadio": "Lumen Field", "sel1": "Nova Zelândia", "sel2": "Bélgica", "placar1": 1, "placar2": 5, "label": null}, {"row": 62, "rd": 3, "grupo": "GrupoG", "data": "2026-06-27", "hora": "00:00", "estadio": "BC Place", "sel1": "Egito", "sel2": "Irã", "placar1": 1, "placar2": 1, "label": null}, {"row": 63, "rd": 3, "grupo": "GrupoH", "data": "2026-06-26", "hora": "21:00", "estadio": "NRG Stadium", "sel1": "Uruguai", "sel2": "Espanha", "placar1": 0, "placar2": 1, "label": null}, {"row": 64, "rd": 3, "grupo": "GrupoH", "data": "2026-06-26", "hora": "21:00", "estadio": "Estádio BBVA", "sel1": "Cabo Verde", "sel2": "Arábia Saudita", "placar1": 0, "placar2": 0, "label": null}, {"row": 65, "rd": 3, "grupo": "GrupoI", "data": "2026-06-26", "hora": "16:00", "estadio": "MetLife Stadium", "sel1": "Noruega", "sel2": "França", "placar1": 1, "placar2": 4, "label": null}, {"row": 66, "rd": 3, "grupo": "GrupoI", "data": "2026-06-26", "hora": "16:00", "estadio": "Gillette Stadium", "sel1": "Senegal", "sel2": "Iraque", "placar1": 5, "placar2": 0, "label": null}, {"row": 67, "rd": 3, "grupo": "GrupoJ", "data": "2026-06-27", "hora": "23:00", "estadio": "Arrowhead", "sel1": "Jordânia", "sel2": "Argentina", "placar1": 1, "placar2": 3, "label": null}, {"row": 68, "rd": 3, "grupo": "GrupoJ", "data": "2026-06-27", "hora": "23:00", "estadio": "Estádio BBVA", "sel1": "Argélia", "sel2": "Áustria", "placar1": 3, "placar2": 3, "label": null}, {"row": 69, "rd": 3, "grupo": "GrupoK", "data": "2026-06-27", "hora": "20:30", "estadio": "Hard Rock Stadium", "sel1": "Colômbia", "sel2": "Portugal", "placar1": 0, "placar2": 0, "label": null}, {"row": 70, "rd": 3, "grupo": "GrupoK", "data": "2026-06-27", "hora": "20:30", "estadio": "Mercedes-Benz", "sel1": "RD Congo", "sel2": "Uzbequistão", "placar1": 3, "placar2": 1, "label": null}, {"row": 71, "rd": 3, "grupo": "GrupoL", "data": "2026-06-27", "hora": "18:00", "estadio": "Lincoln Financial", "sel1": "Panamá", "sel2": "Inglaterra", "placar1": 0, "placar2": 2, "label": null}, {"row": 72, "rd": 3, "grupo": "GrupoL", "data": "2026-06-27", "hora": "18:00", "estadio": "BMO Field", "sel1": "Croácia", "sel2": "Gana", "placar1": 2, "placar2": 1, "label": null}], "participants": [{"key": "GAIA", "name": "Gaia", "picks": [[2, 1], [1, 1], [0, 2], [1, 3], [1, 0], [0, 2], [2, 2], [1, 2], [4, 0], [1, 3], [2, 2], [1, 2], [3, 1], [2, 0], [4, 1], [1, 2], [3, 0], [1, 1], [3, 1], [2, 0], [2, 0], [1, 3], [2, 2], [3, 1], [2, 2], [2, 2], [1, 2], [0, 1], [3, 1], [3, 0], [1, 2], [1, 0], [4, 0], [3, 1], [2, 2], [1, 2], [3, 1], [0, 1], [3, 2], [2, 0], [2, 1], [2, 1], [2, 1], [0, 2], [2, 1], [3, 1], [3, 1], [0, 2], [0, 1], [1, 1], [2, 1], [0, 1], [1, 3], [1, 0], [1, 2], [2, 0], [1, 3], [1, 1], [1, 1], [2, 2], [1, 3], [1, 1], [1, 2], [0, 2], [1, 2], [1, 1], [0, 3], [1, 3], [1, 2], [0, 3], [0, 3], [2, 0]], "campeao": "ALEMANHA", "artilheiro": "HARRY KANE"}, {"key": "BERNARDO", "name": "Bernardo", "picks": [[1, 0], [1, 1], [1, 0], [1, 2], [2, 1], [0, 2], [1, 1], [0, 1], [3, 0], [1, 1], [2, 1], [1, 0], [2, 0], [1, 0], [3, 1], [0, 1], [3, 1], [1, 2], [1, 0], [1, 0], [2, 0], [0, 2], [1, 0], [1, 0], [1, 1], [2, 0], [1, 0], [1, 1], [1, 2], [4, 0], [2, 1], [1, 1], [2, 1], [2, 0], [3, 1], [1, 1], [2, 0], [0, 3], [4, 1], [3, 0], [3, 1], [2, 1], [2, 0], [0, 1], [3, 1], [2, 0], [3, 1], [0, 2], [1, 1], [1, 3], [1, 0], [1, 0], [0, 2], [3, 0], [2, 1], [1, 0], [0, 1], [0, 2], [0, 2], [1, 1], [0, 3], [2, 1], [0, 1], [0, 1], [1, 2], [2, 0], [0, 1], [2, 0], [1, 2], [1, 1], [1, 3], [1, 0]], "campeao": "ESPANHA", "artilheiro": "HARRY KANE"}, {"key": "GUSTAVO", "name": "Gustavo", "picks": [[3, 1], [3, 3], [1, 2], [1, 3], [2, 1], [1, 3], [3, 2], [0, 3], [5, 0], [0, 1], [1, 2], [3, 1], [2, 3], [2, 0], [4, 0], [0, 2], [4, 1], [1, 3], [2, 0], [3, 0], [5, 0], [1, 4], [2, 1], [3, 0], [2, 1], [3, 1], [2, 1], [2, 3], [1, 3], [3, 0], [0, 2], [3, 0], [5, 0], [3, 0], [1, 1], [0, 3], [2, 1], [0, 4], [2, 1], [3, 0], [3, 0], [1, 1], [3, 2], [2, 2], [4, 1], [7, 0], [4, 1], [1, 3], [1, 3], [1, 3], [3, 1], [4, 0], [1, 3], [5, 1], [0, 1], [4, 0], [1, 3], [0, 2], [1, 2], [1, 0], [0, 2], [2, 1], [1, 0], [1, 3], [2, 3], [4, 3], [1, 4], [1, 0], [1, 1], [0, 3], [0, 3], [4, 0]], "campeao": "FRANÇA", "artilheiro": "MBAPPE"}, {"key": "CLAUDIA PESSOA", "name": "Claudia Pessoa", "picks": [[2, 0], [1, 2], [1, 2], [0, 3], [2, 1], [0, 4], [1, 1], [0, 2], [5, 0], [2, 2], [2, 2], [2, 0], [2, 1], [2, 1], [5, 0], [0, 2], [3, 1], [0, 4], [3, 1], [2, 0], [3, 1], [0, 3], [1, 1], [3, 0], [2, 1], [2, 1], [2, 1], [1, 1], [1, 1], [3, 0], [1, 1], [1, 1], [3, 1], [3, 0], [2, 0], [1, 2], [3, 0], [0, 2], [3, 0], [2, 0], [4, 0], [2, 2], [3, 1], [0, 2], [3, 0], [3, 0], [2, 1], [0, 2], [1, 2], [1, 2], [2, 0], [0, 1], [1, 3], [4, 0], [3, 1], [2, 0], [0, 3], [0, 2], [0, 3], [2, 1], [0, 3], [2, 0], [1, 2], [0, 2], [1, 3], [2, 0], [0, 4], [1, 2], [1, 2], [2, 1], [0, 3], [2, 1]], "campeao": "FRANÇA", "artilheiro": "MBAPPE"}, {"key": "JULIANA GILVAZ", "name": "Juliana Gilvaz", "picks": [[2, 0], [1, 2], [1, 2], [0, 2], [2, 1], [0, 3], [1, 1], [0, 2], [5, 0], [1, 2], [2, 1], [2, 0], [2, 1], [2, 1], [4, 0], [1, 3], [4, 1], [0, 2], [3, 1], [2, 0], [3, 1], [0, 2], [1, 1], [2, 0], [3, 1], [2, 1], [2, 0], [2, 1], [1, 2], [5, 0], [2, 1], [2, 0], [3, 1], [3, 0], [2, 1], [1, 2], [3, 0], [0, 2], [4, 0], [2, 0], [5, 0], [1, 1], [2, 0], [1, 2], [3, 0], [2, 0], [2, 1], [0, 2], [2, 1], [1, 2], [2, 0], [2, 1], [1, 2], [3, 0], [1, 1], [2, 1], [0, 2], [0, 2], [0, 3], [2, 1], [0, 4], [2, 0], [1, 2], [1, 1], [1, 3], [2, 0], [0, 3], [0, 1], [1, 1], [1, 1], [0, 3], [2, 1]], "campeao": "FRANÇA", "artilheiro": "MBAPPE"}, {"key": "HENRIQUE MORO", "name": "Henrique Moro", "picks": [[3, 1], [2, 2], [1, 2], [0, 1], [3, 0], [0, 2], [1, 1], [0, 4], [6, 0], [1, 1], [2, 1], [1, 1], [2, 2], [3, 0], [5, 0], [1, 2], [3, 0], [1, 1], [3, 0], [2, 0], [4, 0], [1, 2], [3, 2], [2, 2], [2, 1], [2, 1], [1, 1], [2, 2], [2, 2], [5, 0], [2, 2], [3, 1], [3, 1], [3, 0], [2, 2], [1, 1], [3, 0], [0, 4], [3, 0], [3, 0], [3, 0], [2, 2], [2, 1], [2, 2], [3, 0], [3, 0], [3, 1], [0, 3], [2, 2], [1, 1], [1, 1], [2, 0], [0, 2], [3, 0], [1, 1], [4, 1], [1, 2], [0, 2], [1, 3], [1, 1], [0, 5], [2, 1], [1, 2], [0, 2], [0, 2], [2, 0], [0, 3], [0, 2], [2, 3], [1, 1], [0, 4], [2, 1]], "campeao": "BRASIL", "artilheiro": "NEYMAR"}, {"key": "MARCO MAGNAGO", "name": "Marco Magnago", "picks": [[2, 1], [1, 1], [1, 1], [0, 2], [2, 1], [0, 1], [2, 2], [0, 1], [4, 0], [0, 0], [1, 1], [2, 1], [1, 1], [1, 0], [3, 0], [0, 2], [3, 1], [0, 2], [2, 1], [1, 0], [2, 1], [0, 2], [2, 1], [2, 0], [2, 0], [2, 2], [2, 1], [1, 0], [1, 2], [4, 0], [0, 0], [2, 1], [2, 1], [2, 0], [2, 1], [1, 2], [2, 0], [0, 2], [3, 0], [2, 1], [3, 0], [2, 2], [2, 1], [1, 1], [3, 1], [1, 1], [2, 1], [0, 2], [1, 1], [0, 1], [1, 0], [2, 1], [0, 2], [3, 0], [1, 1], [1, 0], [2, 2], [0, 2], [0, 2], [2, 2], [0, 2], [1, 0], [2, 3], [0, 0], [1, 2], [2, 0], [0, 2], [1, 1], [1, 2], [0, 0], [0, 3], [1, 2]], "campeao": "FRANÇA", "artilheiro": "MBAPPE"}, {"key": "RENATO MARQUES", "name": "Renato Marques", "picks": [[2, 0], [1, 0], [1, 0], [1, 3], [2, 0], [0, 1], [1, 1], [1, 2], [3, 0], [1, 2], [2, 1], [1, 1], [2, 1], [1, 0], [3, 0], [1, 2], [2, 0], [0, 1], [2, 1], [1, 0], [2, 0], [0, 2], [1, 1], [0, 1], [1, 0], [1, 2], [2, 0], [1, 1], [1, 2], [4, 0], [1, 0], [1, 2], [2, 1], [2, 0], [2, 1], [0, 1], [1, 0], [0, 1], [2, 0], [2, 0], [3, 1], [1, 1], [2, 1], [0, 1], [2, 0], [2, 0], [3, 0], [0, 2], [1, 1], [1, 3], [2, 1], [0, 1], [1, 3], [2, 0], [1, 1], [1, 2], [1, 2], [0, 1], [0, 2], [1, 1], [0, 2], [1, 2], [1, 2], [1, 2], [1, 2], [1, 0], [0, 3], [1, 1], [1, 1], [1, 1], [1, 2], [2, 0]], "campeao": "HOLANDA", "artilheiro": "KYLIAN MBAPPÉ"}, {"key": "LUCAS REUTER", "name": "Lucas Reuter", "picks": [[1, 0], [1, 1], [1, 1], [0, 2], [2, 1], [0, 2], [1, 0], [1, 1], [4, 0], [1, 0], [0, 1], [1, 0], [2, 1], [1, 1], [4, 0], [0, 1], [3, 1], [0, 3], [3, 1], [2, 0], [4, 0], [0, 2], [2, 1], [1, 1], [1, 0], [1, 0], [2, 0], [1, 0], [0, 1], [4, 0], [1, 1], [1, 0], [3, 1], [2, 0], [2, 0], [0, 2], [1, 0], [1, 1], [3, 0], [2, 0], [2, 0], [2, 1], [2, 0], [0, 1], [2, 0], [1, 0], [2, 0], [0, 1], [1, 1], [0, 1], [1, 0], [1, 0], [0, 2], [1, 0], [1, 0], [1, 1], [0, 2], [0, 2], [0, 2], [2, 1], [0, 1], [1, 1], [0, 1], [0, 1], [1, 2], [2, 0], [0, 2], [1, 1], [1, 2], [1, 0], [0, 2], [1, 0]], "campeao": "FRANÇA", "artilheiro": "CR7"}, {"key": "CORIOLANO", "name": "Coriolano", "picks": [[2, 1], [2, 0], [1, 0], [0, 1], [2, 1], [1, 2], [1, 1], [1, 1], [3, 0], [2, 1], [2, 2], [2, 1], [2, 1], [2, 1], [5, 0], [1, 2], [2, 1], [1, 2], [2, 1], [1, 0], [4, 0], [0, 3], [1, 1], [3, 0], [1, 2], [1, 1], [2, 1], [2, 0], [2, 2], [4, 1], [1, 1], [1, 1], [2, 1], [2, 0], [2, 2], [1, 2], [2, 1], [1, 1], [2, 0], [2, 0], [2, 1], [2, 2], [2, 1], [1, 2], [3, 0], [3, 1], [2, 2], [0, 2], [0, 1], [1, 2], [2, 2], [1, 1], [1, 2], [2, 0], [1, 1], [1, 1], [1, 2], [0, 2], [1, 2], [1, 1], [1, 2], [2, 2], [1, 2], [1, 2], [1, 1], [2, 1], [0, 2], [1, 1], [2, 2], [2, 1], [0, 3], [2, 2]], "campeao": "FRANÇA", "artilheiro": "MBAPPE"}, {"key": "LEMBO", "name": "Lembo", "picks": [[2, 0], [1, 1], [1, 2], [0, 2], [3, 1], [0, 3], [1, 0], [1, 2], [5, 0], [1, 1], [2, 1], [1, 2], [2, 0], [2, 1], [5, 0], [0, 2], [2, 1], [0, 2], [3, 1], [2, 0], [2, 0], [1, 2], [2, 1], [3, 1], [0, 1], [2, 1], [2, 1], [1, 0], [0, 1], [5, 0], [2, 1], [2, 0], [3, 1], [3, 0], [2, 1], [2, 2], [2, 0], [0, 2], [3, 0], [3, 0], [3, 0], [2, 1], [2, 0], [0, 2], [2, 0], [1, 0], [2, 0], [0, 2], [1, 2], [0, 2], [1, 0], [2, 0], [0, 2], [3, 0], [1, 2], [2, 1], [0, 2], [0, 3], [1, 2], [2, 1], [0, 2], [3, 1], [0, 1], [0, 1], [1, 2], [2, 0], [0, 3], [2, 1], [1, 3], [1, 0], [0, 3], [2, 1]], "campeao": "ESPANHA", "artilheiro": "Mikel Oyarzabal "}, {"key": "MARLON", "name": "Marlon", "picks": [[2, 1], [1, 0], [1, 1], [0, 2], [2, 0], [0, 2], [2, 1], [1, 2], [3, 0], [1, 1], [2, 1], [1, 1], [2, 1], [1, 0], [3, 0], [0, 2], [3, 1], [0, 2], [2, 0], [1, 1], [3, 1], [0, 2], [2, 1], [1, 1], [1, 1], [2, 1], [2, 0], [1, 2], [0, 2], [3, 0], [2, 1], [1, 1], [2, 0], [1, 1], [2, 1], [0, 2], [2, 0], [0, 2], [2, 1], [2, 0], [2, 0], [1, 1], [2, 1], [0, 3], [3, 0], [2, 0], [2, 0], [1, 2], [1, 2], [1, 1], [2, 0], [1, 1], [0, 2], [3, 0], [1, 2], [1, 1], [1, 2], [0, 2], [0, 2], [1, 1], [0, 2], [1, 1], [1, 2], [1, 1], [1, 3], [2, 1], [0, 3], [1, 1], [1, 1], [1, 2], [0, 2], [2, 0]], "campeao": "FRANÇA", "artilheiro": "MBAPPE"}, {"key": "JUNIOR GUIMARÃES", "name": "Junior Guimarães", "picks": [[1, 1], [0, 2], [3, 0], [0, 2], [2, 2], [1, 2], [2, 0], [0, 1], [5, 0], [1, 3], [1, 2], [0, 1], [2, 0], [1, 0], [2, 0], [1, 0], [2, 0], [0, 0], [2, 1], [1, 1], [1, 0], [0, 3], [2, 0], [4, 0], [1, 1], [1, 2], [2, 1], [2, 0], [0, 3], [5, 0], [0, 2], [2, 0], [3, 1], [3, 0], [2, 0], [0, 1], [2, 1], [1, 1], [2, 0], [3, 0], [3, 0], [0, 2], [2, 0], [0, 3], [3, 0], [4, 1], [2, 0], [0, 2], [0, 2], [0, 2], [1, 0], [0, 0], [0, 2], [4, 0], [1, 2], [2, 2], [0, 2], [0, 3], [0, 1], [2, 0], [0, 3], [1, 0], [1, 3], [0, 1], [0, 3], [3, 0], [0, 4], [2, 0], [1, 2], [2, 0], [0, 3], [2, 2]], "campeao": "INGLATERRA", "artilheiro": "HARRY KANE"}, {"key": "GUSTAVO VIANA", "name": "Gustavo Viana", "picks": [[2, 0], [1, 1], [1, 1], [0, 2], [2, 1], [0, 1], [1, 0], [1, 1], [3, 0], [1, 1], [1, 1], [0, 1], [2, 0], [1, 0], [4, 0], [0, 2], [2, 0], [0, 2], [2, 0], [2, 0], [3, 0], [0, 3], [2, 2], [0, 0], [1, 0], [1, 1], [2, 0], [2, 0], [0, 2], [3, 0], [1, 1], [2, 0], [3, 1], [2, 0], [2, 0], [0, 2], [3, 0], [0, 1], [2, 0], [1, 0], [3, 0], [2, 1], [1, 1], [1, 1], [3, 0], [2, 0], [2, 1], [0, 2], [1, 1], [0, 1], [1, 1], [1, 0], [0, 2], [2, 0], [1, 1], [0, 0], [1, 2], [0, 1], [0, 1], [2, 1], [0, 3], [0, 0], [0, 1], [0, 1], [1, 2], [1, 0], [0, 3], [1, 1], [1, 2], [1, 0], [0, 2], [2, 0]], "campeao": "FRANÇA", "artilheiro": "MBAPPE"}, {"key": "EBOLI", "name": "Eboli", "picks": [[1, 1], [0, 1], [1, 1], [1, 1], [2, 0], [1, 1], [1, 1], [0, 1], [4, 0], [1, 1], [1, 1], [1, 0], [1, 1], [1, 1], [4, 0], [0, 1], [2, 0], [0, 2], [1, 0], [1, 1], [3, 0], [0, 1], [2, 1], [1, 1], [2, 0], [1, 0], [1, 1], [1, 1], [1, 2], [4, 0], [1, 1], [2, 0], [3, 0], [1, 0], [1, 1], [0, 1], [2, 0], [0, 1], [3, 0], [2, 0], [3, 0], [2, 0], [1, 1], [1, 1], [2, 0], [1, 0], [4, 0], [0, 2], [1, 1], [1, 1], [1, 1], [1, 1], [0, 3], [2, 0], [1, 2], [1, 1], [0, 2], [0, 2], [0, 2], [1, 1], [0, 2], [1, 1], [1, 2], [1, 2], [2, 2], [1, 1], [1, 2], [1, 1], [0, 2], [1, 1], [0, 3], [1, 0]], "campeao": "BRASIL", "artilheiro": "HARRY KANE"}, {"key": "TALES", "name": "Tales", "picks": [[2, 1], [1, 1], [2, 0], [0, 2], [1, 1], [0, 2], [2, 1], [1, 2], [3, 0], [1, 2], [2, 1], [1, 1], [2, 0], [1, 1], [3, 0], [0, 2], [3, 1], [0, 2], [2, 1], [2, 0], [3, 0], [0, 3], [2, 1], [1, 1], [2, 1], [2, 1], [1, 1], [2, 0], [0, 1], [4, 0], [1, 2], [2, 1], [2, 1], [2, 1], [1, 1], [0, 2], [1, 0], [0, 1], [2, 1], [2, 0], [2, 0], [1, 1], [3, 0], [0, 2], [2, 0], [2, 1], [2, 0], [0, 2], [1, 2], [1, 1], [2, 0], [1, 1], [0, 2], [1, 0], [2, 1], [1, 1], [1, 2], [0, 2], [0, 2], [2, 1], [0, 2], [1, 1], [1, 2], [0, 1], [1, 2], [2, 0], [0, 3], [1, 1], [2, 1], [0, 2], [0, 3], [1, 1]], "campeao": "INGLATERRA", "artilheiro": "HARRY KANE"}]};
+const BOLAO2_DATA = {"matches": [{"id": "q1", "fase": "Quartas", "data": "2026-07-09", "sel1": "Marrocos", "sel2": "França", "placar1": 0, "placar2": 2}, {"id": "q2", "fase": "Quartas", "data": "2026-07-10", "sel1": "Espanha", "sel2": "Bélgica", "placar1": null, "placar2": null}, {"id": "q3", "fase": "Quartas", "data": "2026-07-11", "sel1": "Noruega", "sel2": "Inglaterra", "placar1": null, "placar2": null}, {"id": "q4", "fase": "Quartas", "data": "2026-07-11", "sel1": "Argentina", "sel2": "Suíça", "placar1": null, "placar2": null}], "participants": [{"key": "ANDERSON", "name": "Anderson", "picks": [[1, 2], [3, 1], [1, 2], [2, 1]]}, {"key": "BERNARDO", "name": "Bernardo", "picks": [[0, 1], [4, 1], [1, 3], [2, 1]]}, {"key": "CLAUDIA_PESSOA", "name": "Claudia Pessoa", "picks": [[1, 2], [1, 1], [1, 2], [2, 0]]}, {"key": "EBOLI", "name": "Eboli", "picks": [[1, 1], [1, 0], [1, 2], [1, 1]]}, {"key": "GUSTAVO", "name": "Gustavo", "picks": [[1, 3], [2, 0], [2, 3], [2, 0]]}, {"key": "HENRIQUE_MORO", "name": "Henrique Moro", "picks": [[1, 3], [2, 0], [1, 2], [2, 0]]}, {"key": "JULIANA_GILVAZ", "name": "Juliana Gilvaz", "picks": [[1, 2], [2, 1], [1, 1], [2, 1]]}, {"key": "JUNIOR_GUIMARAES", "name": "Junior Guimarães", "picks": [[3, 2], [1, 0], [2, 0], [0, 1]]}, {"key": "LUCAS_REUTER", "name": "Lucas Reuter", "picks": [[1, 3], [1, 0], [2, 1], [1, 1]]}, {"key": "MARCO_MAGNAGO", "name": "Marco Magnago", "picks": [[1, 3], [2, 1], [2, 2], [2, 1]]}, {"key": "GAIA", "name": "Gaia", "picks": [[1, 0], [2, 1], [1, 3], [2, 1]]}, {"key": "MARLON", "name": "Marlon", "picks": [[1, 2], [1, 0], [2, 2], [2, 0]]}, {"key": "CORIOLANO", "name": "Coriolano", "picks": [[1, 2], [2, 1], [0, 1], [2, 1]]}, {"key": "RENATO_MARQUES", "name": "Renato Marques", "picks": [[1, 2], [1, 0], [1, 1], [2, 1]]}, {"key": "TALES", "name": "Tales", "picks": [[1, 1], [1, 0], [2, 2], [1, 0]]}], "regras": {"cravada": 10, "vencedor": 5, "bonus_saldo": 3, "bonus_placar_um_time": 2}};
+
 </script>
 <script>
 const { matches, participants } = BOLAO_DATA;
@@ -1475,5 +1494,326 @@ function renderReta() {
 }
 
 </script>
+
+<div id="bolao2-ui" class="b2-section" style="display:none;">
+  <nav class="tabs" id="tabs-b2">
+    <button class="active" data-tab2="b2rank">Classificação</button>
+    <button data-tab2="b2games">Jogos &amp; Palpites</button>
+    <button data-tab2="b2rules">Como Funciona</button>
+    <button data-tab2="b2race">Corrida 🏁</button>
+  </nav>
+
+  <section id="tab-b2rank">
+    <div class="round-head" style="margin-top:8px;margin-bottom:4px;">
+      <h2 style="font-family:'Archivo Black',sans-serif;font-size:21px;margin:0;">Classificação</h2>
+      <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--muted);">Bolão Copa 2026 · Mata-Mata · quartas de final em diante</span>
+    </div>
+    <div id="b2rankContainer"></div>
+  </section>
+
+  <section id="tab-b2games" style="display:none;">
+    <div class="round-head" style="margin-top:8px;margin-bottom:4px;">
+      <h2 style="font-family:'Archivo Black',sans-serif;font-size:21px;margin:0;">Jogos &amp; Palpites</h2>
+      <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--muted);">todos os palpites do mata-mata</span>
+    </div>
+    <div id="b2gamesContainer"></div>
+  </section>
+
+  <section id="tab-b2rules" style="display:none;">
+    <div class="round-head" style="margin-top:8px;margin-bottom:4px;">
+      <h2 style="font-family:'Archivo Black',sans-serif;font-size:21px;margin:0;">Como Funciona</h2>
+      <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--muted);">regras do bolão mata-mata</span>
+    </div>
+    <div class="panel" style="margin-top:12px;">
+      <div class="champ-note" style="margin-bottom:0;">
+        <p><strong>Inscrição:</strong> R$ 30 por participante</p>
+        <p><strong>Palpites por fase:</strong> Quartas · Semi · Final</p>
+        <p style="margin-top:12px;"><strong>Pontuação por jogo:</strong></p>
+        <ul style="margin:6px 0 0 16px;line-height:2;">
+          <li><strong>10 pts</strong> — Cravada (placar exato)</li>
+          <li><strong>5 pts</strong> — Acertou o vencedor ou empate</li>
+          <li><strong>+3 pts</strong> — Bônus por acertar o saldo de gols</li>
+          <li><strong>+2 pts</strong> — Bônus por acertar o placar de um dos times</li>
+        </ul>
+        <p style="margin-top:12px;"><strong>Resultados:</strong> tempo normal + prorrogação. Pênaltis não contam para pontuação.</p>
+        <p style="margin-top:12px;"><strong>Premiação:</strong></p>
+        <ul style="margin:6px 0 0 16px;line-height:2;">
+          <li>🥇 1º lugar — 80% da arrecadação</li>
+          <li>🥈 2º lugar — 20% da arrecadação</li>
+        </ul>
+        <p style="margin-top:12px;color:var(--muted);font-size:12.5px;">Com 15 participantes × R$ 30 = R$ 450 de premiação total · 1º: R$ 360 · 2º: R$ 90</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-b2race" style="display:none;">
+    <div class="round-head" style="margin-top:8px;margin-bottom:4px;">
+      <h2 style="font-family:'Archivo Black',sans-serif;font-size:21px;margin:0;">Corrida pelo Título</h2>
+      <span style="font-family:'DM Mono',monospace;font-size:13px;color:var(--muted);">evolução dos pontos jogo a jogo</span>
+    </div>
+    <div id="b2raceContainer" style="position:relative;">
+      <canvas id="raceCanvas2" height="400"></canvas>
+    </div>
+    <div id="b2raceLegend" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px 14px;"></div>
+  </section>
+</div>
+
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  BOLÃO 2 — MATA-MATA (quartas de final em diante)
+// ═══════════════════════════════════════════════════════════
+
+const B2_COLORS = [
+  '#f0c040','#6fcf97','#56ccf2','#eb5757','#9b51e0',
+  '#f2994a','#2d9cdb','#27ae60','#e0457b','#bb87fc',
+  '#f7b731','#45aaf2','#fd9644','#26de81','#a55eea'
+];
+
+// ── Pontuação ──────────────────────────────────────────────
+function b2CalcPoints(pick, official) {
+  const [g, i] = pick;
+  const [og, oi] = official;
+  if (og === null || oi === null) return null;
+  if (g === null || i === null) return 0;
+
+  let pts = 0;
+  // Cravada: placar exato = 10
+  if (g === og && i === oi) return 10;
+  // Acertou vencedor/empate = 5
+  const sameResult = (og === oi && g === i) ||
+                     (og > oi && g > i) ||
+                     (og < oi && g < i);
+  if (sameResult) pts = 5;
+  // +3 acertou saldo (só se já acertou vencedor)
+  if (pts > 0 && Math.abs(g - i) === Math.abs(og - oi)) pts += 3;
+  // +2 acertou placar de um time (só se já acertou vencedor)
+  if (pts > 0 && (g === og || i === oi)) pts += 2;
+  return pts;
+}
+
+// ── Calcular totais ────────────────────────────────────────
+function b2CalcTotals() {
+  const { matches, participants } = BOLAO2_DATA;
+  return participants.map(p => {
+    let total = 0;
+    const detalhes = matches.map((mt, idx) => {
+      const pts = b2CalcPoints(p.picks[idx], [mt.placar1, mt.placar2]);
+      if (pts !== null) total += pts;
+      return { pts, pick: p.picks[idx] };
+    });
+    return { ...p, total, detalhes };
+  });
+}
+
+// ── Aba: Classificação ─────────────────────────────────────
+function b2RenderRank() {
+  const container = document.getElementById('b2rankContainer');
+  if (!container) return;
+  const jogadores = b2CalcTotals().sort((a, b) => b.total - a.total || a.name.localeCompare(b.name));
+  const jogados = BOLAO2_DATA.matches.filter(m => m.placar1 !== null).length;
+
+  let rows = '';
+  let prevTotal = null, pos = 0, displayPos = 0;
+  jogadores.forEach((j, idx) => {
+    displayPos++;
+    if (j.total !== prevTotal) pos = displayPos;
+    prevTotal = j.total;
+    const medal = pos === 1 ? '🥇' : pos === 2 ? '🥈' : pos === 3 ? '🥉' : `${pos}º`;
+    rows += `<tr>
+      <td class="rank-pos">${medal}</td>
+      <td class="rank-name">${j.name}</td>
+      <td class="rank-pts" style="text-align:right;font-family:'DM Mono',monospace;font-weight:700;">${j.total}</td>
+    </tr>`;
+  });
+
+  container.innerHTML = `
+    <div class="champ-note" style="margin-bottom:8px;">
+      ${jogados} de ${BOLAO2_DATA.matches.length} jogos das quartas concluídos
+      ${jogados === 0 ? ' · aguardando resultados' : ''}
+    </div>
+    <div class="panel">
+      <table class="rank">
+        <thead><tr><th>#</th><th>Participante</th><th style="text-align:right;">Pontos</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <p class="reta-note">Pontuação: cravada=10 · vencedor/empate=5 · +3 saldo · +2 placar de um time</p>
+  `;
+}
+
+// ── Aba: Jogos & Palpites (accordion, igual bolão 1) ─────
+function b2RenderGames() {
+  const container = document.getElementById('b2gamesContainer');
+  if (!container) return;
+  const { matches, participants } = BOLAO2_DATA;
+  const totals = b2CalcTotals();
+
+  // Agrupar por fase
+  const fases = [...new Set(matches.map(m => m.fase))];
+  let html = '';
+
+  fases.forEach(fase => {
+    const faseMatches = matches.map((mt, idx) => ({...mt, idx})).filter(mt => mt.fase === fase);
+    if (!faseMatches.length) return;
+
+    html += `<div class="round-block"><div class="round-head"><h2>${fase}</h2><span class="count">${faseMatches.length} jogo${faseMatches.length > 1 ? 's' : ''}</span></div>`;
+
+    faseMatches.forEach(mt => {
+      const played = mt.placar1 !== null && mt.placar2 !== null;
+      const scoreHtml = played
+        ? `<span class="score">${mt.placar1} × ${mt.placar2}</span>`
+        : `<span class="score pending">a definir</span>`;
+
+      const pickRows = totals.map(p => {
+        const [g, i] = p.picks[mt.idx];
+        const pts = p.detalhes[mt.idx].pts;
+        const ptsLabel = pts === null ? '—' : `${pts} pts`;
+        const cls = pts === 10 ? 'pts-exact' : pts > 0 ? 'pts-ok' : pts === 0 ? 'pts-zero' : '';
+        return `<div class="pick-row">
+          <span class="pname">${p.name}</span>
+          <span class="pscore">${g} × ${i}</span>
+          <span class="ppts ${cls}">${ptsLabel}</span>
+        </div>`;
+      }).join('');
+
+      html += `
+        <div class="match-card">
+          <div class="match-top" onclick="this.nextElementSibling.classList.toggle('open'); this.querySelector('.match-toggle').textContent = this.nextElementSibling.classList.contains('open') ? 'ocultar ↑' : 'palpites ↓';">
+            <div class="match-meta">${fase}</div>
+            <div class="match-teams">
+              <span class="team t1">${mt.sel1}</span>
+              ${scoreHtml}
+              <span class="team t2">${mt.sel2}</span>
+            </div>
+            <div class="match-toggle">palpites ↓</div>
+          </div>
+          <div class="picks-grid">${pickRows}</div>
+        </div>`;
+    });
+
+    html += '</div>';
+  });
+
+  container.innerHTML = html;
+}
+
+// ── Aba: Corrida ───────────────────────────────────────────
+function b2DrawRace() {
+  const canvas = document.getElementById('raceCanvas2');
+  if (!canvas) return;
+  const { matches, participants } = BOLAO2_DATA;
+  const played = matches.filter(m => m.placar1 !== null);
+  if (played.length === 0) {
+    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+    document.getElementById('b2raceLegend').innerHTML =
+      '<span style="font-family:DM Mono,monospace;font-size:12px;color:var(--muted)">Aguardando os resultados das quartas de final...</span>';
+    return;
+  }
+
+  // Construir séries acumuladas
+  const series = participants.map((p, pi) => {
+    let cum = 0;
+    const vals = [0];
+    played.forEach((mt, idx) => {
+      const midx = matches.indexOf(mt);
+      const pts = b2CalcPoints(p.picks[midx], [mt.placar1, mt.placar2]) || 0;
+      cum += pts;
+      vals.push(cum);
+    });
+    return { name: p.name, vals, color: B2_COLORS[pi % B2_COLORS.length] };
+  });
+
+  const labels = ['Início', ...played.map(m => `${m.sel1.slice(0,3)} × ${m.sel2.slice(0,3)}`)];
+  const maxVal = Math.max(...series.map(s => Math.max(...s.vals)));
+
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.parentElement.clientWidth;
+  const H = 400;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const PAD = { top: 20, right: 80, bottom: 40, left: 40 };
+  const cw = W - PAD.left - PAD.right;
+  const ch = H - PAD.top - PAD.bottom;
+  const n = labels.length;
+
+  ctx.fillStyle = '#1a1a2e';
+  ctx.fillRect(0, 0, W, H);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255,255,255,.07)'; ctx.lineWidth = 1;
+  for (let g = 0; g <= 4; g++) {
+    const y = PAD.top + ch - (g / 4) * ch;
+    ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(PAD.left + cw, y); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,.3)';
+    ctx.font = `10px 'DM Mono',monospace`;
+    ctx.fillText(Math.round(maxVal * g / 4), 4, y + 4);
+  }
+
+  // Labels eixo X
+  ctx.fillStyle = 'rgba(255,255,255,.4)'; ctx.font = `10px 'DM Mono',monospace`;
+  ctx.textAlign = 'center';
+  labels.forEach((lb, i) => {
+    const x = PAD.left + (i / (n - 1)) * cw;
+    ctx.fillText(lb, x, H - 8);
+  });
+
+  // Linhas
+  series.forEach(s => {
+    ctx.beginPath();
+    ctx.strokeStyle = s.color; ctx.lineWidth = 2.5;
+    s.vals.forEach((v, i) => {
+      const x = PAD.left + (i / (n - 1)) * cw;
+      const y = PAD.top + ch - (maxVal > 0 ? (v / maxVal) * ch : 0);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+    // Ponto final com nome
+    const lastX = PAD.left + cw;
+    const lastY = PAD.top + ch - (maxVal > 0 ? (s.vals[s.vals.length - 1] / maxVal) * ch : 0);
+    ctx.fillStyle = s.color;
+    ctx.beginPath(); ctx.arc(lastX, lastY, 4, 0, Math.PI * 2); ctx.fill();
+    ctx.font = `bold 11px 'Archivo Black',sans-serif`;
+    ctx.textAlign = 'left';
+    ctx.fillText(s.name.split(' ')[0], lastX + 6, lastY + 4);
+  });
+
+  // Legenda
+  const legend = document.getElementById('b2raceLegend');
+  legend.innerHTML = series
+    .sort((a, b) => b.vals[b.vals.length-1] - a.vals[a.vals.length-1])
+    .map(s => `<span style="display:inline-flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:11px;">
+      <span style="width:12px;height:3px;background:${s.color};display:inline-block;border-radius:2px;"></span>${s.name}
+    </span>`).join('');
+}
+
+// ── Troca de abas do bolão 2 ───────────────────────────────
+document.querySelectorAll('#tabs-b2 button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#tabs-b2 button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    ['b2rank','b2games','b2rules','b2race'].forEach(t => {
+      const el = document.getElementById('tab-' + t);
+      if (el) el.style.display = (t === btn.dataset.tab2) ? 'block' : 'none';
+    });
+    if (btn.dataset.tab2 === 'b2rank') setTimeout(b2RenderRank, 50);
+    if (btn.dataset.tab2 === 'b2games') setTimeout(b2RenderGames, 50);
+    if (btn.dataset.tab2 === 'b2race') { setTimeout(() => { b2DrawRace(); window.addEventListener('resize', b2DrawRace); }, 50); }
+  });
+});
+
+// ── Seletor de Bolão ──────────────────────────────────────
+function switchBolao(n) {
+  document.getElementById('bolao1-ui').style.display = n === 1 ? 'block' : 'none';
+  document.getElementById('bolao2-ui').style.display = n === 2 ? 'block' : 'none';
+  document.getElementById('btn-b1').classList.toggle('active', n === 1);
+  document.getElementById('btn-b2').classList.toggle('active', n === 2);
+  if (n === 2) setTimeout(b2RenderRank, 50);
+}
+</script>
+
 </body>
 </html>
